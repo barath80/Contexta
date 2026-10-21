@@ -1,0 +1,117 @@
+{
+  "id": "data-breach-response",
+  "name": "Data Breach Response Playbook",
+  "description": "Respond to suspected data exfiltration or unauthorised data access.",
+  "version": "2.0",
+  "category": "breach_response",
+  "severity_threshold": "high",
+  "trigger_conditions": {
+    "categories": [
+      "data_exfiltration"
+    ],
+    "keywords": [
+      "exfiltration",
+      "data leak",
+      "breach",
+      "unauthorized access",
+      "information disclosure"
+    ]
+  },
+  "steps": [
+    {
+      "order": 1,
+      "name": "Confirm the breach",
+      "description": "Verify that data was accessed or exfiltrated.",
+      "action_type": "manual",
+      "timeout_minutes": 30,
+      "required": true,
+      "on_failure": "stop"
+    },
+    {
+      "order": 2,
+      "name": "Activate incident response team",
+      "description": "Notify IR, legal and communications.",
+      "action_type": "automated",
+      "timeout_minutes": 10,
+      "required": true,
+      "on_failure": "stop",
+      "action": "notify"
+    },
+    {
+      "order": 3,
+      "name": "Contain the breach",
+      "description": "Isolate the affected asset to stop ongoing exfiltration.",
+      "action_type": "automated",
+      "timeout_minutes": 5,
+      "required": true,
+      "on_failure": "stop",
+      "action": "isolate_asset"
+    },
+    {
+      "order": 4,
+      "name": "Preserve evidence",
+      "description": "Snapshot logs, indicators and risk context with an integrity hash.",
+      "action_type": "automated",
+      "timeout_minutes": 15,
+      "required": true,
+      "on_failure": "stop",
+      "action": "collect_evidence"
+    },
+    {
+      "order": 5,
+      "name": "Block exfiltration destinations",
+      "description": "Block attacker infrastructure observed in events.",
+      "action_type": "automated",
+      "timeout_minutes": 10,
+      "required": false,
+      "on_failure": "continue",
+      "action": "block_iocs"
+    },
+    {
+      "order": 6,
+      "name": "Assess data exposure",
+      "description": "Determine which data sets and records were accessed or exfiltrated.",
+      "action_type": "manual",
+      "timeout_minutes": 240,
+      "required": true,
+      "on_failure": "stop"
+    },
+    {
+      "order": 7,
+      "name": "Legal and regulatory assessment",
+      "description": "Determine notification duties (e.g. CERT-In within 6 hours, DPDP Act, GDPR).",
+      "action_type": "manual",
+      "timeout_minutes": 120,
+      "required": true,
+      "on_failure": "stop"
+    },
+    {
+      "order": 8,
+      "name": "Notify regulators and affected parties",
+      "description": "Submit required notifications and inform affected individuals.",
+      "action_type": "manual",
+      "timeout_minutes": 240,
+      "required": true,
+      "on_failure": "stop"
+    },
+    {
+      "order": 9,
+      "name": "Remediate root cause",
+      "description": "Fix the weakness that enabled the breach and rotate exposed credentials.",
+      "action_type": "manual",
+      "timeout_minutes": 1440,
+      "required": true,
+      "on_failure": "stop",
+      "on_complete": "restore_asset"
+    },
+    {
+      "order": 10,
+      "name": "Post-incident review",
+      "description": "Run a lessons-learned session and update controls.",
+      "action_type": "manual",
+      "timeout_minutes": 120,
+      "required": true,
+      "on_failure": "stop"
+    }
+  ]
+}

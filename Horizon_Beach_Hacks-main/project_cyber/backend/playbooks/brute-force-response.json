@@ -1,0 +1,72 @@
+{
+  "id": "brute-force-response",
+  "name": "Credential Attack Response Playbook",
+  "description": "Respond to brute-force, password-spraying or repeated login-failure activity.",
+  "version": "1.0",
+  "category": "containment",
+  "severity_threshold": "medium",
+  "trigger_conditions": {
+    "categories": [
+      "brute_force",
+      "login_failure",
+      "port_scan"
+    ],
+    "keywords": [
+      "brute force",
+      "password spray",
+      "credential",
+      "login failure",
+      "authentication bypass"
+    ]
+  },
+  "steps": [
+    {
+      "order": 1,
+      "name": "Block attacking sources",
+      "description": "Add the attacking IPs to the platform blocklist.",
+      "action_type": "automated",
+      "timeout_minutes": 5,
+      "required": true,
+      "on_failure": "stop",
+      "action": "block_iocs"
+    },
+    {
+      "order": 2,
+      "name": "Snapshot evidence",
+      "description": "Preserve the authentication events and indicators.",
+      "action_type": "automated",
+      "timeout_minutes": 5,
+      "required": true,
+      "on_failure": "stop",
+      "action": "collect_evidence"
+    },
+    {
+      "order": 3,
+      "name": "Review targeted accounts",
+      "description": "Check whether any attempt succeeded; force password reset and revoke sessions for affected accounts.",
+      "action_type": "manual",
+      "timeout_minutes": 30,
+      "required": true,
+      "on_failure": "stop"
+    },
+    {
+      "order": 4,
+      "name": "Enforce MFA and lockout policy",
+      "description": "Ensure MFA and rate limiting protect the exposed service.",
+      "action_type": "manual",
+      "timeout_minutes": 60,
+      "required": true,
+      "on_failure": "stop"
+    },
+    {
+      "order": 5,
+      "name": "Notify service owner",
+      "description": "Inform the asset owner and security team.",
+      "action_type": "automated",
+      "timeout_minutes": 5,
+      "required": false,
+      "on_failure": "continue",
+      "action": "notify"
+    }
+  ]
+}
